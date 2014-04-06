@@ -15,28 +15,26 @@
 namespace sjp {
 
 template <typename T>
-struct counter
+class counter
 {
-	static std::size_t objects_created;
-	static std::size_t objects_alive;
-	static std::size_t objects_destroyed;
+public:
+	static std::size_t created;
+	static std::size_t alive;
+
 	counter()
-		{ ++objects_created; ++objects_alive; }
+		{ ++created; ++alive; }
 
 	static void print_counts(std::ostream & out, const std::string & type)
 	{
-		out << "Created " << objects_created << ' ' << type << "(s). "
-			<< "Destroyed " << objects_destroyed << ". "
-			<< objects_alive << " still alive." << std::endl;
+		out << "Created " << created << ' ' << type << "(s). "
+			<< alive << " still alive." << std::endl;
 	}
 protected:
 	~counter() // objects should never be removed through pointers of this type
-		{ --objects_alive; ++objects_destroyed; }
+		{ --alive; }
 };
-
-template <typename T> std::size_t counter<T>::objects_created( 0 );
-template <typename T> std::size_t counter<T>::objects_destroyed( 0 );
-template <typename T> std::size_t counter<T>::objects_alive( 0 );
+template <typename T> std::size_t counter<T>::created( 0 );
+template <typename T> std::size_t counter<T>::alive( 0 );
 
 };
 

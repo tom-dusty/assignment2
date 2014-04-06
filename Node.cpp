@@ -16,7 +16,7 @@ Node::Node(int noChildrenIn)
 	children = new Node[numChildren];
 }
 
-//Default contructor
+//Default constructor
 Node::Node(void) : numChildren(0), value("") {}
 
 //Copy Constructor
