@@ -13,23 +13,18 @@
 
 class Node : public sjp::counter<Node>
 {
-private:
-	int numChildren;
-	static int noChildren;
-	static int maxChildren;
-
 public:
 	Node ** children;
 	std::string value;
+	int numChildren;
+	static int noChildren;
+	static int maxChildren;
 	//public variables
 
 
 	//public functions
 	Node(int noChildren);
-	std::string to_String(sstream strIn);
-	int getNoChildren(void);
-	int getMaxChildren(void);
-	bool setValue(std::string valueIn);
+	std::string to_String(std::stringstream strIn);
 	//six special member fucntions
 	Node(void);
 	Node(const Node & rhs);
