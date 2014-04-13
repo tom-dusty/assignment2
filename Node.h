@@ -7,7 +7,6 @@
 
 #include <cstdlib>
 #include <string> 
-#include <iostream>
 #include <sstream>
 #include "counter.h" // where is counter.cpp
 
@@ -17,21 +16,25 @@ public:
 	Node ** children;
 	std::string value;
 	int numChildren;
+	int numUsed;
 	static int noChildren;
 	static int maxChildren;
 	//public variables
 
+	void destroy(void);
 
 	//public functions
 	Node(int noChildren);
-	std::string to_String(std::stringstream strIn);
-	//six special member fucntions
+	virtual std::string to_String(std::stringstream & strIn);
+	//six special member functions
 	Node(void);
 	Node(const Node & rhs);
 	Node(Node && rhs);
+	virtual Node* clone() const;
 	Node & operator=(const Node & rhs);
 	Node & operator=(Node && rhs);
-	~Node(void);
+	virtual ~Node(void);
+	
 };
 
 #endif /* NODE_H_ */
