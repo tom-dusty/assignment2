@@ -28,6 +28,12 @@ tree_iterator & tree_iterator::operator+=(std::size_t distance)
 	return *this;
 }
 
+tree_iterator & tree_iterator::operator+(std::size_t distance)
+{
+	operator+=(distance);
+	return *this;
+}
+
 tree_iterator & tree_iterator::operator-=(std::size_t distance)
 {
 	for(std::size_t x = 0;x<distance;x++)
@@ -37,7 +43,13 @@ tree_iterator & tree_iterator::operator-=(std::size_t distance)
 	return *this;
 }
 
-//Increment operation
+tree_iterator & tree_iterator::operator-(std::size_t distance)
+{
+	operator-=(distance);
+	return *this;
+}
+
+//Prefix increment operation
 tree_iterator & tree_iterator::operator++()
 {
 	if(currNode != nullptr)
@@ -67,7 +79,15 @@ tree_iterator & tree_iterator::operator++()
 	return *this;
 }
 
-//Decrement operation
+//postfix increment - implemented in terms of prefix increment
+tree_iterator tree_iterator::operator++(int)
+{
+	tree_iterator temp(*this);
+	operator++();
+	return temp;
+}
+
+//prefix decrement operation
 tree_iterator & tree_iterator::operator--()
 {
 	if(currNode != nullptr)
@@ -97,6 +117,14 @@ tree_iterator & tree_iterator::operator--()
 	}
 	
 	return *this;
+}
+
+//postfix decrement - implemented in terms of prefix decrement
+tree_iterator tree_iterator::operator--(int)
+{
+	tree_iterator temp(*this);
+	operator--();
+	return temp;
 }
 
 //Overload * operator to return a reference to the current node

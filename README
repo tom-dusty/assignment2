@@ -1,0 +1,39 @@
+Assignment 2: Parse tree data structure construction
+Thomas Dusterwald - DSTTHO002
+14 April 2014
+
+Description: A parse tree is a form of n-ary tree. This data structure is made up of nodes, each with a different specialized type, as well as a container to hold the nodes and an iterator to iterate through the tree in a depth first fashion. Each of these structures were implemented and polymorphism included to make a useable parse tree. 
+
+Instructions:
+1. In an ubuntu shell, run the makefile ('make'). This should compile everything nicely. If it does not then make sure you are not missing any files (see list of files below).
+2. Type 'make run'. This runs the ./tests program which creates a series of random trees to test their properties.
+3. There are also a number of options available with ./tests. These include, but are not limited to:
+	-h 		help
+	-l 		list tests (or can list matching test cases)
+	-s 		include successful tests
+	-a 		abort at first failure
+4. Test case names are:
+	Node
+	Iterator
+	Parse Tree
+	Polymorphism
+	Randomized Tree Testing
+5. Other commands are 'make clean' which deletes all object files.
+
+List of files and dependencies (note: -> is 'depends on'):
+makefile
+README
+.git
+testing.cpp -> FunctionCall.cpp While.cpp If.cpp parse_tree.cpp Node.cpp tree_iterator.cpp parse_tree.o Compound.cpp Statement.cpp Expression.cpp
+parse_tree.cpp -> tree_iterator.cpp Node.cpp
+tree_iterator -> Node.cpp
+Node.cpp
+FunctionCall.cpp -> Node.cpp
+Expression.cpp -> Node.cpp
+Statement.cpp -> Node.cpp
+Compound.cpp -> Node.cpp Expression.cpp
+If.cpp -> Node.cpp Compound.cpp Expression.cpp
+While.cpp -> Node.cpp Compound.cpp Expression.cpp
+
+Also the following header files: Node.h tree_iterator.h parse_tree.h FunctionCall.h Expression.h Statement.h Compound.h If.h While.h
+

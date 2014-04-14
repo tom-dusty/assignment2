@@ -24,7 +24,6 @@ public:
 	parse_tree & operator=(const parse_tree & rhs) = default;
 	parse_tree & operator=(parse_tree && rhs) = default;
 	~parse_tree(void) = default;
-	//constructor
 
 	//end and begin functions
 	tree_iterator end(void) const;

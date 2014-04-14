@@ -8,7 +8,7 @@
 #include <cstdlib>
 #include <string> 
 #include <sstream>
-#include "counter.h" // where is counter.cpp
+#include "counter.h" 
 
 class Node : public sjp::counter<Node>
 {
@@ -25,7 +25,7 @@ public:
 
 	//public functions
 	Node(int noChildren);
-	virtual std::string to_String(std::stringstream & strIn);
+	virtual std::string to_string(std::stringstream & strIn);
 	//six special member functions
 	Node(void);
 	Node(const Node & rhs);

@@ -1,10 +1,21 @@
 //testing
 //Thomas Dusterwald
 //5 April 2014
+/*
+Some general notes:
+The tests are divided into five Test cases:
+	Node - tests the Node class, including the 6 special member functions
+	Iterator - tests the tree_iterator methods for correctness
+	Parse Tree - tests parse_tree methods and 6 special member functions
+	Polymorphism - Makes sure the polymorphic calls are functioning correctly
+	Randomized Tree Testing - Creates 500 random trees and checks them for correctness
+*/
 
-#include <iostream>		// I/O streams Header
-#include <string>		// Strings Header
-#include <random>		// For random number generation
+//Neccessary includes
+#include <iostream>		
+#include <string>		
+#include <random>	
+#include <chrono>	
 #include "Node.h"		
 #include "tree_iterator.h"
 #include "parse_tree.h"
@@ -18,13 +29,14 @@
 #define CATCH_CONFIG_MAIN /
 #include "catch.hpp"     
 
-#define UNIT_TESTING     // So that we know whether to include our counter class
+#define UNIT_TESTING     
 #include "counter.h"   
 
 TEST_CASE("Node")
 {
 	SECTION("Test constructor")
 	{
+		std::cout << "__TESTS__" << std::endl;
 		Node n1(7);
 		Node n2(9);
 		n1.value = "hello";
@@ -85,50 +97,44 @@ TEST_CASE("Node")
 	}
 
 
-/*
+
 	SECTION("Test destructor")
 	{
-		Node n1(2);n1.value = "1";
-		Node n2(3);n2.value = "2";
-		Node n3(2);n3.value = "3";
-		Node n4(2);n4.value = "4";
-		Node n5(0);n5.value = "5";
-		Node n6(0);n6.value = "6";
-		Node n7(0);n7.value = "7";
-		Node n8(0);n8.value = "8";
-		Node n9(0);n9.value = "9";
-		Node n10(0);n10.value = "10";
+		{
+			Node n1(2);n1.value = "1";
+			Node n2(3);n2.value = "2";
+			Node n3(2);n3.value = "3";
+			Node n4(2);n4.value = "4";
+			Node n5(0);n5.value = "5";
+			Node n6(0);n6.value = "6";
+			Node n7(0);n7.value = "7";
+			Node n8(0);n8.value = "8";
+			Node n9(0);n9.value = "9";
+			Node n10(0);n10.value = "10";
 
-		*(n4.children[0]) = n9;
-		*(n4.children[1]) = n10;
-		*(n2.children[0]) = n4;
-		*(n2.children[1]) = n5;
-		*(n2.children[2]) = n6;
-		*(n3.children[0]) = n7;
-		*(n3.children[1]) = n8;
-		*(n1.children[0]) = n2;
-		*(n1.children[1]) = n3;
-		n1.destroy();
-		n2.destroy();
-		n3.destroy();
-		n4.destroy();
-		n5.destroy();
-		n6.destroy();
-		n7.destroy();
-		n8.destroy();
-		n9.destroy();
-		n10.destroy();
-
-		//REQUIRE(Node::alive == 0);
+			*(n4.children[0]) = n9;
+			*(n4.children[1]) = n10;
+			*(n2.children[0]) = n4;
+			*(n2.children[1]) = n5;
+			*(n2.children[2]) = n6;
+			*(n3.children[0]) = n7;
+			*(n3.children[1]) = n8;
+			*(n1.children[0]) = n2;
+			*(n1.children[1]) = n3;
+		}
+		REQUIRE(Node::alive == 0);
 	}
-	*/
 
-	SECTION("Test to_String")
+	SECTION("Test to_string")
 	{
+		Node n3(0);n3.value = "3";
 		Node n1(7);
+		*(n1.children[1]) = n3;
 		std::stringstream ss;
-		n1.to_String(ss);
-		std::cout << ss.str();
+		n1.to_string(ss);
+		REQUIRE(ss.str()=="");
+		n1.children[1]->to_string(ss);
+		REQUIRE(ss.str()=="3");
 	}
 }
 
@@ -154,31 +160,34 @@ TEST_CASE("Iterator")
 	Node n9(0);n9.value = "9";
 	Node n10(0);n10.value = "10";
 
-	*(n4.children[0]) = n9;
-	*(n4.children[1]) = n10;
-	*(n2.children[0]) = n4;
-	*(n2.children[1]) = n5;
-	*(n2.children[2]) = n6;
-	*(n3.children[0]) = n7;
-	*(n3.children[1]) = n8;
-	*(n1.children[0]) = n2;
-	*(n1.children[1]) = n3;
+	parse_tree tree;
+	tree_iterator t = tree.begin();
+	t = tree.insert(t,n1);
+	tree.insert(t,n2);
+	tree.insert(t,n3);
+	t++;
+	tree.insert(t,n4);
+	tree.insert(t,n5);
+	tree.insert(t,n6);
+	t++;
+	tree.insert(t,n9);
+	tree.insert(t,n10);
+	t+=11;
+	tree.insert(t,n7);
+	tree.insert(t,n8);
 	
 	SECTION("Test increment and decrement operations")
 	{
-		parse_tree tree;
-		tree_iterator t(tree.begin());
-		tree.insert(t,n1);
 		t = tree.begin();
 		REQUIRE((*t)->value==n1.value);++t;
-		REQUIRE((*t)->value==n2.value);++t;
+		REQUIRE((*t)->value==n2.value);t++;
 		REQUIRE((*t)->value==n4.value);++t;
 		REQUIRE((*t)->value==n9.value);++t;
 		REQUIRE((*t)->value==n4.value);++t;
 		REQUIRE((*t)->value==n10.value);++t;
 		REQUIRE((*t)->value==n4.value);++t;
 		REQUIRE((*t)->value==n2.value);--t;
-		REQUIRE((*t)->value==n4.value);--t;
+		REQUIRE((*t)->value==n4.value);t--;
 		REQUIRE((*t)->value==n10.value);--t;
 		REQUIRE((*t)->value==n4.value);++t;
 		REQUIRE((*t)->value==n10.value);++t;
@@ -188,7 +197,7 @@ TEST_CASE("Iterator")
 
 	SECTION("Test += and -= operations")
 	{
-		tree_iterator t(&n1);
+		t=tree.begin();
 		t+=5;
 		REQUIRE((*t)->value == n10.value);
 		t-=3;
@@ -197,31 +206,28 @@ TEST_CASE("Iterator")
 
 	SECTION("Test distance operation")
 	{
-		tree_iterator t1(&n1);
-		t1+=5;
-		tree_iterator t2(&n1);
-		REQUIRE((t1-t2) == 5);
+		t=tree.begin();
+		t+=5;
+		tree_iterator t2 = tree.begin();
+		REQUIRE((t-t2) == 5);
 	}	
 
 	SECTION("Test copy constructor")
 	{
-		tree_iterator t1(&n1);
-		++t1;
-		++t1;
-		tree_iterator t2(t1);
+		t=tree.begin();
+		++t;
+		++t;
+		tree_iterator t2(t);
 		++t2;
-		++t1;
-		REQUIRE(t2==t1);
-	}
-	SECTION("Test destructor")
-	{
-		//n2.~Node();
+		++t;
+		REQUIRE(t2==t);
 	}
 }
 
 TEST_CASE("Parse Tree")
 {
-	/*		n1
+	/* The tree shown below is built and then tests run on it		
+			n1
 		   / 
 		  n2  
 		 /|\   
@@ -264,11 +270,21 @@ TEST_CASE("Parse Tree")
 		REQUIRE((*t)->value==n10.value);
 		t+=10;
 		REQUIRE(t==z);
-		std::cout << ptree << std::endl;
 	}
 
+	SECTION("Test begin() and end() functions")
+	{
+		tree_iterator beg = ptree.begin();
+		tree_iterator end = ptree.end();
+		int count = 0;
+		while(beg!=end)
+		{
+			count++;
+			++beg;
+		}
+		REQUIRE(count == 15);
+	}
 
-/*
 	SECTION("Check erase")
 	{
 		{
@@ -276,76 +292,87 @@ TEST_CASE("Parse Tree")
 			t = ptree.begin();
 			++t;
 			ptree.erase(t);
-			std::cout << ptree << std::endl;
-			REQUIRE((x-Node::alive) == 5);
+			REQUIRE((x-Node::alive) == 6);
 		}
-
-		std::cout << "winning?" << std::endl;
 	}
 
 	SECTION("check clear")
 	{
+		int x = Node::alive;
 		ptree.clear();
-		std::cout << ptree << std::endl;
-		REQUIRE(Node::alive == 12);
+		REQUIRE((x-Node::alive) == 8);
 	}
 
-	SECTION("Last check")
+	SECTION("Test copy constructor")
 	{
-		REQUIRE(Node::alive == 0);
+		parse_tree ptree2(ptree);
+		t = ptree2.begin();
+		REQUIRE((*t)->value==n1.value);++t;
+		REQUIRE((*t)->value==n2.value);++t;
+		REQUIRE((*t)->value==n4.value);++t;
+		REQUIRE((*t)->value==n9.value);++t;
+		REQUIRE((*t)->value==n4.value);++t;
+		REQUIRE((*t)->value==n10.value);
 	}
-	*/
+	
+
+	SECTION("Test copy assignment operator")
+	{
+		parse_tree ptree2=ptree;
+		t = ptree2.begin();
+		REQUIRE((*t)->value==n1.value);++t;
+		REQUIRE((*t)->value==n2.value);++t;
+		REQUIRE((*t)->value==n4.value);++t;
+		REQUIRE((*t)->value==n9.value);++t;
+		REQUIRE((*t)->value==n4.value);++t;
+		REQUIRE((*t)->value==n10.value);
+	}
 }
 
 
 TEST_CASE("Polymorphism")
 {
+/*
+Builds the tree that was shown in the assignment that should produce the code:
+{
+	a = 0
+	while (a < 10){
+		if (a % 2 == 0){
+			print "even"
+		}
+		else {
+			print "odd"
+		}
+		a += 1
+	}
+}
+*/
 
+	//Building tree
 	Compound c1 (2);
-	
 	Statement s1;
 	Node a;a.value = "a";
 	Expression exp1(1);
-
-
 	While wh;
 	Expression exp2(3);
 	Node br1; br1.value = "(";
 	Node br2; br2.value = ")";
-	Expression exp3(3);
 	Node lt;lt.value = "<";
 	Node exp10;exp10.value = "10";
-
-	Compound c2(2);
 	If if1;
-	Expression exp4(3);
-	Expression exp5(3);
 	Node eq;eq.value = "==";
 	Node eq1;eq1.value = "=";
 	Node zero;zero.value = "0";
-	Expression exp6(3);
 	Node mod;mod.value = "%";
 	Node two;two.value = "2";
-
-
 	Compound c3(1);
 	FunctionCall f1(1,"print");
 	Node even;even.value = "\"even\"";
-
-
-	Compound c4(1);
-	FunctionCall f2(1, "print");
 	Node odd;odd.value = "\"odd\"";
-
-	Statement s2;
 	Node peq;peq.value = "+=";
-	Expression exp7(1);
 	Node one;one.value = "1";
 
 
-
-
-	Node * pointer = new Node;
 	parse_tree ptree;
 	tree_iterator t(ptree.begin());
 	ptree.insert(t,c1);
@@ -407,13 +434,109 @@ TEST_CASE("Polymorphism")
 	t+=5;
 	ptree.insert(t,one);
 
-
-	
-	
+	std::cout << "Actual code" << std::endl;
+	std::cout << "{\n  a = 0\n  while (a<10){\n  if (a%2==0){\n  print \"even\" \n}\nelse{\n  print \"odd\" \n}\n  a += 1\n}\n}\n" << std::endl;
+	std::string test = "{\n  a = 0\n  while (a<10){\n  if (a%2==0){\n  print \"even\" \n}\nelse{\n  print \"odd\" \n}\n  a += 1\n}\n}\n";
+	//Testing tree
 	std::stringstream ss;
-	(*ptree.begin())->to_String(ss); 
+	(*ptree.begin())->to_string(ss); 
+	std::cout<<"Version produced by tree" << std::endl;
 	std::cout<<ss.str()<<std::endl;
-	
+	REQUIRE(ss.str()==test);
+	std::stringstream ss1;
+	parse_tree ptree1(ptree);
+	(*ptree1.begin())->to_string(ss1);
+	//std::cout <<ss1.str()<<std::endl;
+}
+
+TEST_CASE("Randomized Tree Testing")
+{
+	SECTION("Randomized Tree Testing")
+	{
+		for(int x = 0;x < 500;x++) //Repeat tests 500 times
+		{
+			{
+			parse_tree ptree;
+			tree_iterator t = ptree.begin();
+			//Creating random integers between 3 and 10 for the height of the tree
+			std::size_t seed = std::chrono::system_clock::now().time_since_epoch().count();
+    		std::default_random_engine e(seed);
+    		std::uniform_int_distribution<int> rangeh(3, 10);
+    		//Each child has anywhere between 0 and 5 children
+    		std::uniform_int_distribution<int> rangec(1, 5);
+
+    		int height = rangeh(e);
+
+    		//Construct tree
+    		int numchild = rangec(e);
+    		Node temp(numchild);
+    		ptree.insert(t,temp);
+    		t = ptree.begin();
+    		int heighti = 1;
+    		
+    		while(heighti < height)
+    		{
+    			for(int x = 0;x<(*t)->numChildren;x++)
+    			{
+    				numchild = rangec(e);
+    				Node temp(numchild);
+    				ptree.insert(t,temp);
+    			}
+    			++t;
+    			heighti++;
+    		}
+    		
+    		//Test copy constructor
+    		parse_tree p2(ptree);
+    		tree_iterator beg = ptree.begin();
+    		tree_iterator end = ptree.end();
+    		tree_iterator z = p2.begin();
+    		while(beg!=end)
+    		{
+    			REQUIRE((*z)->numChildren==(*beg)->numChildren);
+    			z++;
+    			beg++;
+    		}
+
+    		//Test copy assignment
+    		parse_tree p3 = ptree;
+    		beg = ptree.begin();
+    		end = ptree.end();
+    		z = p3.begin();
+    		while(beg!=end)
+    		{
+    			REQUIRE((*z)->numChildren==(*beg)->numChildren);
+    			z++;
+    			beg++;
+    		}
+
+
+
+    		//Check erase
+    		int N = 1;
+    		t = ptree.begin();
+    		t+=N;
+    		ptree.erase(t);
+    		beg = p3.begin();
+    		end = p3.end();
+    		int count = 0;
+    		int count2 = 0;
+    		while(beg!=end)
+    		{
+    			if(count2<N)
+    				count2++;
+    			else
+    				count++;
+    			beg++;
+    		}
+    		REQUIRE(ptree.size()==count+2);
+
+    		//Check clear
+    		ptree.clear();
+    		REQUIRE(*(ptree.begin())==0);
+    	}	
+		}
+	}
 }
 
 

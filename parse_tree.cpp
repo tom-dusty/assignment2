@@ -21,15 +21,14 @@ tree_iterator parse_tree::end(void) const
 //deletes the entire tree from the root downwards
 void parse_tree::clear(void)
 {
-	root->destroy();
+	root->~Node();
+	root = nullptr;
 }
 
 //deletes the given node and all its children
 void parse_tree::erase(tree_iterator i)
 {
-	Node temp(1);
-	temp.children[0]=(*i);
-	//(*i)->destroy();
+	(*i)->~Node();
 }
 
 //Returns the size of the tree
@@ -67,7 +66,8 @@ tree_iterator parse_tree::insert(tree_iterator parent, const Node & child)
 			++beg;
 			if(beg == finish)
 			{
-				//throw exception
+				//Throws Exception if the node is not in the tree
+				throw;
 				return parent;
 				break;
 			}
@@ -86,12 +86,12 @@ tree_iterator parse_tree::insert(tree_iterator parent, const Node & child)
 				return ret;
 			}
 		}
-		//throw exception
+		//Exception thrown if the Node has too many children
+		throw;
 	}
 }
 
 //does a depth first traversal and passes an inorder representation of the tree to os
-
 std::ostream& operator<<(std::ostream & os, const parse_tree & ptree)
 {
 	tree_iterator beg(ptree.begin());
@@ -101,7 +101,7 @@ std::ostream& operator<<(std::ostream & os, const parse_tree & ptree)
 	{
 		if(beg==finish)
 			break;
-		(*beg)->to_String(ss);
+		(*beg)->to_string(ss);
 		os << ss.str();
 		ss.str("");
 		++beg;

@@ -1,6 +1,6 @@
 // If Node header file
 // Thomas Dusterwald
-// 2 April 2014
+// 13 April 2014
 
 #ifndef IF_H_
 #define IF_H_
@@ -11,7 +11,8 @@ class If : public Node
 {
 public:
 	If(void);
-	std::string to_String(std::stringstream & strIn);
+	std::string to_string(std::stringstream & strIn);
+	//Clone function used to make a polymorphic copy of this Node type
 	Node * clone(void) const;
 };
 

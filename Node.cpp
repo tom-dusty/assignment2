@@ -7,7 +7,7 @@
 int Node::maxChildren = 0;
 int Node::noChildren = 0;
 //To string method prints the value of the node if it has 0 children. (ie leaf node)
-std::string Node::to_String(std::stringstream& strIn)
+std::string Node::to_string(std::stringstream& strIn)
 {
 	if(numChildren == 0)
 	{
@@ -141,25 +141,3 @@ Node::~Node(void)
 
 	
 }
-
-//Fake destructor
-void Node::destroy(void)
-{
-	if(children!=nullptr)
-	{
-		noChildren -= numChildren;
-		for(int x = 0;x<numChildren;x++)
-		{
-			delete children[x];
-			children[x] = nullptr;
-		}
-		if(numChildren != 0)
-		{
-			delete[] children;
-			children = nullptr;
-			numChildren = 0;
-		}
-	}
-
-}
-

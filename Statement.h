@@ -1,6 +1,6 @@
 // Node header file
 // Thomas Dusterwald
-// 2 April 2014
+// 13 April 2014
 
 #ifndef STATEMENT_H_
 #define STATEMENT_H_
@@ -10,8 +10,11 @@
 class Statement : public Node
 {
 public:
+	//Constructor
 	Statement(void);
-	std::string to_String(std::stringstream & strIn);
+	//Overloaded to_string method
+	std::string to_string(std::stringstream & strIn);
+	//Clone function used to make a polymorphic copy of this Node type
 	Node * clone(void) const;
 };
 
